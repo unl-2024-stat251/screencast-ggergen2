@@ -6,3 +6,43 @@ output: html
 categories: project
 ---
 
+## Summarizing Data Set
+
+-   Will run summarize function
+
+-   Check data types and for NAs
+
+-   Will change data types i.e. dates and filter NAs if needed
+
+## Add and Subtract Age Gaps
+
+-   Using lubridate and date time assignment to double check age gaps
+
+-   Will fix if necessary
+
+## Clean the Data
+
+-   Will use dplyr and tdyr libraries to get to dfs that will show these outcomes:
+
+    -   How have age gaps in movie relationships changed over time?
+    -   Do directors with more than one movie tend to have similar age gapes?
+    -   Are there certain actors/actresses that tend to play characters with large age gaps?
+
+## Graph the Data
+
+-   Using ggplot2 and plotly will graph the following:
+    -   How have age gaps in movie relationships changed over time?
+
+        -   Plannig on Line graph with average age gap for year (could change depending on how data looks)
+
+    -   Do directors with more than one movie tend to have similar age gapes?
+
+        -   Planning on bar graph with the directors on x axis and the bars being the movie and y axis is age gap
+
+    -   Are there certain actors/actresses that tend to play characters with large age gaps?
+
+        Planning on scatterplot with younger actor/ress on x axis and older on y. plotly so it is interactive and can hover on point to see which pair it is.
+
+## Shiny App
+
+Cannot wrap my head around this taking \~45 minutes, and I don't think I have enough thoughts in my head to talk that long. So, I'm planning on trying to build a shiny app with an interactivce dashboard to filter the data on the three graphs with the remaining time if that is cool
