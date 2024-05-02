@@ -1,5 +1,5 @@
 ---
-author: "Your Name"
+author: "Grey Gergen"
 date: "2023-05-04"
 title: "Project: Screencast"
 output: html
@@ -10,36 +10,128 @@ categories: project
 
 For your final project (which will take the place of the final exam), you will be recording a screencast in the style of David Robinson's TidyTuesday screencasts.
 
-You can find time-stamped, catalogued versions of some of David Robinson's screencasts [here](https://www.rscreencasts.com/). 
+You can find time-stamped, catalogued versions of some of David Robinson's screencasts [here](https://www.rscreencasts.com/).
 
 Requirements:
 
-- Your screencast should be approximately 45 minutes long.
-- Your screencast should show your analysis of a [TidyTuesday dataset from 2023](https://github.com/rfordatascience/tidytuesday)
-- You should showcase at least 4 different techniques you've learned in Stat 251. Some examples include:
+-   Your screencast should be approximately 45 minutes long.
 
-    - data cleaning (dplyr) verbs
-    - reshaping data (tidyr)
-    - working with dates and times (lubridate)
-    - working with strings (stringr)
-    - writing functions to modularize your code
-    - visualizing your data effectively
-    
-Unlike David Robinson's screencasts, you will write a rough pseudocode "script" before you start recording. 
-This will give you a rough outline of how to do the analysis and what things you intend to cover.
+-   Your screencast should show your analysis of a [TidyTuesday dataset from 2023](https://github.com/rfordatascience/tidytuesday)
 
-Your goal is to help a future Stat 251 student understand some of the topics covered in this class. 
-So while David Robinson and others who record their screencasts live might not fully explain what he's doing, you should take the time to explain each technique you decide to use in a way that will help someone else understand.
+-   You should showcase at least 4 different techniques you've learned in Stat 251. Some examples include:
 
+    -   data cleaning (dplyr) verbs
+    -   reshaping data (tidyr)
+    -   working with dates and times (lubridate)
+    -   working with strings (stringr)
+    -   writing functions to modularize your code
+    -   visualizing your data effectively
+
+Unlike David Robinson's screencasts, you will write a rough pseudocode "script" before you start recording. This will give you a rough outline of how to do the analysis and what things you intend to cover.
+
+Your goal is to help a future Stat 251 student understand some of the topics covered in this class. So while David Robinson and others who record their screencasts live might not fully explain what he's doing, you should take the time to explain each technique you decide to use in a way that will help someone else understand.
 
 There will be three deliverables for this project:
 
-1. [Plan your dataset and topics](Dataset-Topics.qmd)
-2. [Pseudocode script](pseudocode.qmd) uploaded to github repository
-3. Screencast + github repository
-    - Screencast uploaded to YouTube/YuJa
-    - Approximate time index provided for each of the 4 techniques you're demonstrating ([examples](https://www.rscreencasts.com/))
-    - Code uploaded to github repository
+1.  [Plan your dataset and topics](Dataset-Topics.qmd)
+2.  [Pseudocode script](pseudocode.qmd) uploaded to github repository
+3.  Screencast + github repository
+    -   Screencast uploaded to YouTube/YuJa
+    -   Approximate time index provided for each of the 4 techniques you're demonstrating ([examples](https://www.rscreencasts.com/))
+    -   Code uploaded to github repository
 
-In lieu of the final exam, you will peer review two classmates' screencasts. 
+In lieu of the final exam, you will peer review two classmates' screencasts.
 
+# Time Index
+
+-   1:00 Read in df
+
+-   4:00 Summarizing df
+
+-   6:00 Date time functions
+
+-   7:50 First graph's data manipulation
+
+-   9:45 First graph code
+
+-   11:20 Second graph's data manipulation
+
+-   15:10 Second graph code
+
+-   20:19 More second graph data manipulation
+
+-   26:00 Second graph code again
+
+-   33:00 Third graph's data manipulation
+
+-   35:00 Third graph code
+
+```{r, warning=FALSE, error=FALSE}
+# | echo: false
+library(tidyverse)
+```
+
+```{r, warning=FALSE, error=FALSE, message=FALSE}
+# | echo: false
+age_gaps <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-14/age_gaps.csv')
+```
+
+# Summarizing Df
+
+```{r}
+
+summary(age_gaps)
+# Doesn't show data type for the dates
+str(age_gaps)
+
+```
+
+# Confirming age gaps are correct
+
+```{r}
+age_gaps$actor_1_birthdate = ymd(age_gaps$actor_1_birthdate)
+age_gaps$actor_2_birthdate = ymd(age_gaps$actor_2_birthdate)
+
+date_interval <- interval(age_gaps$actor_1_birthdate, age_gaps$actor_2_birthdate)
+age_gaps$year_difference <- time_length(date_interval, unit = "years")
+
+# look up ages to see if actor age means age at filming, confirm with readme
+```
+
+# Cleaning Data for Graphing
+
+```{r}
+
+year_avg <- age_gaps %>%
+  group_by(release_year) %>%
+  summarise(average = mean(year_difference))
+
+ggplot(year_avg) +
+  geom_line(aes(x = release_year, y = average))
+
+```
+
+```{r}
+
+
+wa <- age_gaps %>%
+  filter(director == "Woody Allen") %>%
+  group_by(movie_name) %>%
+  summarize(average = mean(year_difference))
+
+
+
+ggplot(wa) +
+  geom_col(aes(x = movie_name, y = average), stat="count") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
+
+
+```
+
+```{r}
+library(plotly)
+
+plot_ly(type = "scatter", data = age_gaps, x = ~release_year, y = ~year_difference, mode = "markers", text = ~paste(actor_2_name, actor_1_name))
+  
+```
